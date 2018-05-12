@@ -88,3 +88,8 @@ hash_t *hash_crear(hash_destruir_dato_t destruir_dato) {
 size_t hash_cantidad(const hash_t *hash) {
 	return hash->cantidad;
 }
+
+
+/* ******************************************************************
+ *                    PRIMITIVAS DEL ITERADOR
+ * *****************************************************************/
