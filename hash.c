@@ -17,7 +17,7 @@ struct hash {
 	hash_destruir_dato_t destruir_dato;
 };
 
-struct nodo {
+typedef struct nodo {
 	char* clave;
 	void* dato;
 }nodo_t;
