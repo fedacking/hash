@@ -53,7 +53,7 @@ unsigned long funcion_hash(const char* clave, size_t capacidad) {
 
 
 /* ******************************************************************
- *                    PRIMITIVAS DE LA LISTA
+ *                    PRIMITIVAS DEL HASH TABLE
  * *****************************************************************/
 
 
