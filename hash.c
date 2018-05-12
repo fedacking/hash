@@ -93,3 +93,9 @@ size_t hash_cantidad(const hash_t *hash) {
 /* ******************************************************************
  *                    PRIMITIVAS DEL ITERADOR
  * *****************************************************************/
+bool hash_iter_al_final(const hash_iter_t *iter){
+	if((iter->pos == iter->hash->capacidad - 1) || (iter->hash->cantidad == 0)){
+		return true;
+	}
+	return false;
+}
