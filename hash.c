@@ -93,9 +93,44 @@ size_t hash_cantidad(const hash_t *hash) {
 /* ******************************************************************
  *                    PRIMITIVAS DEL ITERADOR
  * *****************************************************************/
+hash_iter_t *hash_iter_crear(const hash_t *hash) {
+	hash_iter_t* iterador = malloc(sizeof(hash_iter_t));
+
+	if (!iterador) {
+		return NULL;
+	}
+
+	iterador->hash = hash;
+
+	//si el hash esta vacio el iterador esta al final
+	if(iterador->hash->cantidad == 0){
+		iterador->pos = iterador->hash->capacidad - 1;
+		iterador->iter_actual = NULL;
+	} else {
+		//si tiene elementos busca la primera lista que tenga elementos
+		//le asigna la posicion de esa lista en el hash y crea el iterador de esa lista
+		int i= 0;
+		while(lista_esta_vacia(hash->tabla[i]) && i < hash->capacidad) {
+			i++;				
+		}
+		iterador->pos = i;
+		iterador->iter_actual = lista_iter_crear(hash->tabla[i]);
+	}
+		
+	return iterador;
+}
+
 bool hash_iter_al_final(const hash_iter_t *iter){
 	if((iter->pos == iter->hash->capacidad - 1) || (iter->hash->cantidad == 0)){
 		return true;
 	}
 	return false;
+}
+
+void hash_iter_destruir(hash_iter_t* iter) {
+	if (iter->iter_actual) {
+		lista_iter_destruir(iter->iter_actual);
+	}
+	
+	free(iter);
 }
