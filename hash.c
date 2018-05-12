@@ -5,6 +5,8 @@
 #include "lista.h"
 #include "hash.h"
 
+#define CAPACIDAD_INICIAL 10
+
 /* ******************************************************************
  *                DEFINICION DE LOS TIPOS DE DATOS
  * *****************************************************************/
@@ -12,7 +14,7 @@ struct hash {
 	lista_t** tabla;
 	size_t cantidad;
 	size_t capacidad;
-	void destruir_dato(void*);
+	hash_destruir_dato_t destruir_dato;
 };
 
 struct hash_campos{
@@ -53,7 +55,33 @@ unsigned long funcion_hash(const char* clave, size_t capacidad) {
 
 
 /* ******************************************************************
- *                    PRIMITIVAS DEL HASH TABLE
+ *                    PRIMITIVAS DEL HASH
  * *****************************************************************/
 
+hash_t *hash_crear(hash_destruir_dato_t destruir_dato) {
+
+	hash_t* tabla_hash = malloc(sizeof(hash_t));
+
+	if (!tabla_hash) {
+		return NULL;
+	}
+
+	tabla_hash->tabla = malloc(CAPACIDAD_INICIAL * sizeof(lista_t*));
+
+	if (!tabla_hash->tabla){
+		free(tabla_hash);
+		return NULL;
+	}
+
+	for (int i = 0; i < CAPACIDAD_INICIAL; i++) {
+		tabla_hash->tabla[i] = lista_crear();
+	}
+	
+	tabla_hash->cantidad = 0;
+	tabla_hash->capacidad = CAPACIDAD_INICIAL;
+	tabla_hash->destruir_dato = destruir_dato;
+	
+	return tabla_hash;
+
+}
 
