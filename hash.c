@@ -17,10 +17,10 @@ struct hash {
 	hash_destruir_dato_t destruir_dato;
 };
 
-struct hash_campos{
+struct nodo {
 	char* clave;
 	void* dato;
-};
+}nodo_t;
 
 struct hash_iter {
 	size_t pos;
