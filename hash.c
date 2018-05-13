@@ -173,6 +173,13 @@ bool hash_iter_avanzar(hash_iter_t *iter) {
 	return true;
 }
 
+const char *hash_iter_ver_actual(const hash_iter_t *iter) {
+	if(hash_iter_al_final(iter)){
+		return NULL;
+	}
+
+	return iter->iter_actual->actual->clave;
+}
 
 void hash_iter_destruir(hash_iter_t* iter) {
 	if (iter->iter_actual) {
