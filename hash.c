@@ -93,6 +93,17 @@ size_t hash_cantidad(const hash_t *hash) {
 /* ******************************************************************
  *                    PRIMITIVAS DEL ITERADOR
  * *****************************************************************/
+size_t siguiente_posicion_con_elementos(const hash_t *hash, size_t pos) {
+	while(lista_esta_vacia(hash->tabla[pos]) && pos < hash->capacidad) {
+		pos++;
+	}
+
+	return pos;
+
+}
+
+
+
 hash_iter_t *hash_iter_crear(const hash_t *hash) {
 	hash_iter_t* iterador = malloc(sizeof(hash_iter_t));
 
@@ -108,29 +119,65 @@ hash_iter_t *hash_iter_crear(const hash_t *hash) {
 		iterador->iter_actual = NULL;
 	} else {
 		//si tiene elementos busca la primera lista que tenga elementos
-		//le asigna la posicion de esa lista en el hash y crea el iterador de esa lista
+		//le asigna la posicion de esa lista en el haintsh y crea el iterador de esa lista
 		int i= 0;
+
+		/*
 		while(lista_esta_vacia(hash->tabla[i]) && i < hash->capacidad) {
-			i++;				
+			i++;
 		}
+
 		iterador->pos = i;
+		*/
+		iterador->pos = siguiente_posicion_con_elementos(hash,i);
 		iterador->iter_actual = lista_iter_crear(hash->tabla[i]);
+
 	}
-		
+
 	return iterador;
 }
 
+
 bool hash_iter_al_final(const hash_iter_t *iter){
-	if((iter->pos == iter->hash->capacidad - 1) || (iter->hash->cantidad == 0)){
+	size_t siguiente_lista = siguiente_posicion_con_elementos(iter->hash, iter->pos);
+	if((iter->pos == siguiente_lista) || (iter->hash->cantidad == 0)){
 		return true;
 	}
 	return false;
 }
 
+bool hash_iter_avanzar(hash_iter_t *iter) {
+	//si esta al final devuelve false
+	if (hash_iter_al_final(iter)){
+		return false;
+	}
+
+	//avanza y si el "sub-iterador" de la lista esta al final destruye el "sub-iterador"
+	//y va a la siguiente lista con elementos
+	if(!lista_iter_avanzar(iter->iter_actual)) {
+		lista_iter_destruir(iter->iter_actual);
+
+		//busca la siguiente pos con elementos
+		size_t nueva_posicion = siguiente_posicion_con_elementos(iter->hash, iter->pos);
+
+		//si es la misma posicion que la anterior, entonces no hay listas con elementos y devuelve false
+		if(hash_iter_al_final(iter)){
+			return false;
+		}
+
+		//si avanzó bien, se crea el iterador para la siguiente lista con elementos
+		iter->pos = nueva_posicion;
+		iter->iter_actual = lista_iter_crear(iter->hash->tabla[iter->pos]);
+	}
+
+	return true;
+}
+
+
 void hash_iter_destruir(hash_iter_t* iter) {
 	if (iter->iter_actual) {
 		lista_iter_destruir(iter->iter_actual);
 	}
-	
+
 	free(iter);
 }
